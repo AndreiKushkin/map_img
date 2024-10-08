@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Add a raster image to a map layer</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+  mapboxgl.accessToken = 'pk.eyJ1IjoiYW5kcm9pZC1tYXJzaG1hbGxvdyIsImEiOiJjbHkxbzlkZnQwczk2MmlxeGpld2hqenpxIn0.XME04OBqOUn6YeoESo9l_w';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        maxZoom: 22,
+        minZoom: 4,
+        zoom: 16,
+        center: [150.8452, -33.6625],
+        // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+        style: 'mapbox://styles/mapbox/streets-v12', // style URL
+    });
+
+    map.on('load', () => {
+        // map.addSource('radar', {
+        //     'type': 'image',
+        //     'url': 'https://docs.mapbox.com/mapbox-gl-js/assets/radar.gif',
+        //     'coordinates': [
+        //         [-80.425, 46.437],
+        //         [-71.516, 46.437],
+        //         [-71.516, 37.936],
+        //         [-80.425, 37.936]
+        //     ]
+        // });
+        // map.addLayer({
+        //     id: 'radar-layer',
+        //     'type': 'raster',
+        //     'source': 'radar',
+        //     'paint': {
+        //         'raster-fade-duration': 0
+        //     }
+        // });
+        // Add sources and layers
+        const sources = ['JPG','PNG','WEBP','WEBP85','WEBP60','WEBP40']
+        for (let source of sources){
+            switch(source){
+                case 'JPG':
+                    name = 'test3857.jpg';
+                case 'PNG':
+                    name = 'test3857.png';
+                case 'WEBP':
+                    name = 'test3857.webp';
+                case 'WEBP85':
+                    name = 'test3857_lossy85.webp';
+                case 'WEBP60':
+                    name = 'test3857_lossy60.webp';
+                case 'WEBP40':
+                    name = 'test3857_lossy40.webp';
+            }
+            map.addSource(source, {
+                'type': 'image',
+                'url': 'https://raw.githubusercontent.com/AndreiKushkin/map_img/main/'+name,
+                'coordinates': [
+                [150.8452, -33.6625],
+                [150.8519, -33.6625],
+                [150.8519, -33.6675],
+                [150.8452, -33.6675]
+                ]
+            });
+        }
+
+        // map.addSource('JPG', {
+        //     'type': 'image',
+        //     'url': 'https://raw.githubusercontent.com/AndreiKushkin/map_img/main/test3857.jpg',
+        //     'coordinates': [
+        //         [150.8452, -33.6625],
+        //         [150.8519, -33.6625],
+        //         [150.8519, -33.6675],
+        //         [150.8452, -33.6675]
+        //     ]
+        // });
+        // map.addLayer({
+        //     id: 'JPG_layer',
+        //     'type': 'raster',
+        //     'source': 'JPG',
+        //     'paint': {
+        //         'raster-fade-duration': 0
+        //     }
+        // });
+        // add PNG
+        // map.addSource('PNG', {
+        //     'type': 'image',
+        //     'url': 'https://raw.githubusercontent.com/AndreiKushkin/map_img/main/test3857.jpg',
+        //     'coordinates': [
+        //         [150.8452, -33.6625],
+        //         [150.8519, -33.6625],
+        //         [150.8519, -33.6675],
+        //         [150.8452, -33.6675]
+        //     ]
+        // });
+        // map.addLayer({
+        //     id: 'PNG_layer',
+        //     'type': 'raster',
+        //     'source': 'testJPG',
+        //     'paint': {
+        //         'raster-fade-duration': 0
+        //     }
+        // });
+    });
+
+        map.on('idle', () => {
+        // If these two layers were not added to the map, abort
+        if (!map.getLayer('contours') || !map.getLayer('museums')) {
+            return;
+        }
+
+        // Set up the corresponding toggle button for each layer.
+        for (const source of sources) {
+            // Skip layers that already have a button set up.
+            if (document.getElementById(source)) {
+                continue;
+            }
+
+            // Create a link.
+            const link = document.createElement('a');
+            link.id = source;
+            link.href = '#';
+            link.textContent = source;
+            link.className = 'active';
+
+            // Show or hide layer when the toggle is clicked.
+            link.onclick = function (e) {
+                const clickedLayer = this.textContent;
+                e.preventDefault();
+                e.stopPropagation();
+
+                // If the layer is not added to the map, add it
+                if (!map.getLayer(clickedLayer)){
+                    map.addLayer({
+                        'id': source,
+                        'type': 'raster',
+                        'source': source,
+                        'paint': {
+                            'raster-fade-duration': 0
+                        }
+                    });
+                } else {
+                    const visibility = map.getLayoutProperty(
+                        clickedLayer,
+                        'visibility'
+                    );
+
+                    // Toggle layer visibility by changing the layout object's visibility property.
+                    if (visibility === 'visible') {
+                        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                        this.className = '';
+                    } else {
+                        this.className = 'active';
+                        map.setLayoutProperty(
+                            clickedLayer,
+                            'visibility',
+                            'visible'
+                        );
+                    }
+                }
+            };
+
+            const layers = document.getElementById('menu');
+            layers.appendChild(link);
+        }
+    });
+</script>
+
+</body>
+</html>
