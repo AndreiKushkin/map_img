@@ -9,9 +9,51 @@
 <style>
 body { margin: 0; padding: 0; }
 #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+#menu {
+        background: #fff;
+        position: absolute;
+        z-index: 1;
+        top: 10px;
+        right: 10px;
+        border-radius: 3px;
+        width: 120px;
+        border: 1px solid rgba(0, 0, 0, 0.4);
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    #menu a {
+        font-size: 13px;
+        color: #404040;
+        display: block;
+        margin: 0;
+        padding: 0;
+        padding: 10px;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        text-align: center;
+    }
+
+    #menu a:last-child {
+        border: none;
+    }
+
+    #menu a:hover {
+        background-color: #f8f8f8;
+        color: #404040;
+    }
+
+    #menu a.active {
+        background-color: #3887be;
+        color: #ffffff;
+    }
+
+    #menu a.active:hover {
+        background: #3074a4;
+    }
 </style>
 </head>
 <body>
+<nav id="menu"></nav>
 <div id="map"></div>
 <script>
   mapboxgl.accessToken = 'pk.eyJ1IjoiYW5kcm9pZC1tYXJzaG1hbGxvdyIsImEiOiJjbHkxbzlkZnQwczk2MmlxeGpld2hqenpxIn0.XME04OBqOUn6YeoESo9l_w';
@@ -24,7 +66,7 @@ body { margin: 0; padding: 0; }
         // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
         style: 'mapbox://styles/mapbox/streets-v12', // style URL
     });
-
+    const sources = ['JPG','PNG','WEBP','WEBP85','WEBP60','WEBP40']
     map.on('load', () => {
         // map.addSource('radar', {
         //     'type': 'image',
@@ -44,80 +86,10 @@ body { margin: 0; padding: 0; }
         //         'raster-fade-duration': 0
         //     }
         // });
-        // Add sources and layers
-        const sources = ['JPG','PNG','WEBP','WEBP85','WEBP60','WEBP40']
-        for (let source of sources){
-            switch(source){
-                case 'JPG':
-                    name = 'test3857.jpg';
-                case 'PNG':
-                    name = 'test3857.png';
-                case 'WEBP':
-                    name = 'test3857.webp';
-                case 'WEBP85':
-                    name = 'test3857_lossy85.webp';
-                case 'WEBP60':
-                    name = 'test3857_lossy60.webp';
-                case 'WEBP40':
-                    name = 'test3857_lossy40.webp';
-            }
-            map.addSource(source, {
-                'type': 'image',
-                'url': 'https://raw.githubusercontent.com/AndreiKushkin/map_img/main/'+name,
-                'coordinates': [
-                [150.8452, -33.6625],
-                [150.8519, -33.6625],
-                [150.8519, -33.6675],
-                [150.8452, -33.6675]
-                ]
-            });
-        }
-
-        // map.addSource('JPG', {
-        //     'type': 'image',
-        //     'url': 'https://raw.githubusercontent.com/AndreiKushkin/map_img/main/test3857.jpg',
-        //     'coordinates': [
-        //         [150.8452, -33.6625],
-        //         [150.8519, -33.6625],
-        //         [150.8519, -33.6675],
-        //         [150.8452, -33.6675]
-        //     ]
-        // });
-        // map.addLayer({
-        //     id: 'JPG_layer',
-        //     'type': 'raster',
-        //     'source': 'JPG',
-        //     'paint': {
-        //         'raster-fade-duration': 0
-        //     }
-        // });
-        // add PNG
-        // map.addSource('PNG', {
-        //     'type': 'image',
-        //     'url': 'https://raw.githubusercontent.com/AndreiKushkin/map_img/main/test3857.jpg',
-        //     'coordinates': [
-        //         [150.8452, -33.6625],
-        //         [150.8519, -33.6625],
-        //         [150.8519, -33.6675],
-        //         [150.8452, -33.6675]
-        //     ]
-        // });
-        // map.addLayer({
-        //     id: 'PNG_layer',
-        //     'type': 'raster',
-        //     'source': 'testJPG',
-        //     'paint': {
-        //         'raster-fade-duration': 0
-        //     }
-        // });
+        
     });
 
         map.on('idle', () => {
-        // If these two layers were not added to the map, abort
-        if (!map.getLayer('contours') || !map.getLayer('museums')) {
-            return;
-        }
-
         // Set up the corresponding toggle button for each layer.
         for (const source of sources) {
             // Skip layers that already have a button set up.
@@ -130,7 +102,7 @@ body { margin: 0; padding: 0; }
             link.id = source;
             link.href = '#';
             link.textContent = source;
-            link.className = 'active';
+            //link.className = 'active';
 
             // Show or hide layer when the toggle is clicked.
             link.onclick = function (e) {
@@ -140,6 +112,37 @@ body { margin: 0; padding: 0; }
 
                 // If the layer is not added to the map, add it
                 if (!map.getLayer(clickedLayer)){
+                    console.log('adding to map: '+ clickedLayer)
+                    switch(source){
+                        case 'JPG':
+                            name = 'test3857.jpg';
+                             break;
+                        case 'PNG':
+                            name = 'test3857.png';
+                             break;
+                        case 'WEBP':
+                            name = 'test3857.webp';
+                             break;
+                        case 'WEBP85':
+                            name = 'test3857_lossy85.webp';
+                             break;
+                        case 'WEBP60':
+                            name = 'test3857_lossy60.webp';
+                             break;
+                        case 'WEBP40':
+                            name = 'test3857_lossy40.webp';
+                             break;
+                    }
+                    map.addSource(source, {
+                        'type': 'image',
+                        'url': 'https://raw.githubusercontent.com/AndreiKushkin/map_img/main/'+name,
+                        'coordinates': [
+                        [150.8452, -33.6625],
+                        [150.8519, -33.6625],
+                        [150.8519, -33.6675],
+                        [150.8452, -33.6675]
+                        ]
+                    });
                     map.addLayer({
                         'id': source,
                         'type': 'raster',
@@ -148,6 +151,12 @@ body { margin: 0; padding: 0; }
                             'raster-fade-duration': 0
                         }
                     });
+                    this.className = 'active';
+                    map.setLayoutProperty(
+                        clickedLayer,
+                        'visibility',
+                        'visible'
+                    );
                 } else {
                     const visibility = map.getLayoutProperty(
                         clickedLayer,
