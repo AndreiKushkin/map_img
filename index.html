@@ -137,10 +137,10 @@ body { margin: 0; padding: 0; }
                         'type': 'image',
                         'url': 'https://raw.githubusercontent.com/AndreiKushkin/map_img/main/'+name,
                         'coordinates': [
-                        [150.8452, -33.6625],
-                        [150.8519, -33.6625],
-                        [150.8519, -33.6675],
-                        [150.8452, -33.6675]
+                        [150.8453232, -33.6624641],
+                        [150.85188302, -33.66257833],
+                        [150.8517603, -33.66751297],
+                        [150.84520012, -33.66739873]
                         ]
                     });
                     map.addLayer({
@@ -148,7 +148,8 @@ body { margin: 0; padding: 0; }
                         'type': 'raster',
                         'source': source,
                         'paint': {
-                            'raster-fade-duration': 0
+                            'raster-fade-duration': 0,
+                            'raster-opacity': 0.7
                         }
                     });
                     this.className = 'active';

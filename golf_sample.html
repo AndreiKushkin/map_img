@@ -31,10 +31,10 @@ body { margin: 0; padding: 0; }
             'type': 'image',
             'url': 'https://raw.githubusercontent.com/AndreiKushkin/map_img/main/golf_sample.webp',
             'coordinates': [
-                (38.88097584713329, -107.92850624497154),
-                (38.88103701893265, -107.92606803822123),
-                (38.87963021350555, -107.92601029303643),
-                (38.879569044760224, -107.92844845183701)
+                [-107.92850624, 38.88097585],
+                [-107.92606804, 38.88103702],
+                [-107.92601029, 38.87963021],
+                [-107.92844845, 38.87956904]
             ]
         });
         map.addLayer({
@@ -42,7 +42,8 @@ body { margin: 0; padding: 0; }
             'type': 'raster',
             'source': 'img',
             'paint': {
-                'raster-fade-duration': 0
+                'raster-fade-duration': 0,
+                'raster-opacity': 0.7
             }
         });
     });
